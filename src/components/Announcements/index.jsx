@@ -21,7 +21,6 @@ function AnnouncementList() {
         }}
       >
         {data?.announcements ? (
-          data?.announcements &&
           data?.announcements.map((announcement) => (
             <AnnouncementCard announcement={announcement} />
           ))

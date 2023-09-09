@@ -23,6 +23,8 @@ function SingleEvent() {
 
   useEffect(() => {
     Api(`events/${eventId}`, "GET", null, false).then((data) => {
+      console.log("data?.comments", data?.comments);
+      data?.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setComments(data?.comments);
     });
   }, [isSuccess, eventId]);
@@ -59,6 +61,7 @@ function SingleEvent() {
     }
     setIsSuccess(true);
     showToast("Comment added successfully!", "success");
+    setTimeout(() => setIsSuccess(false), 1000);
   };
 
   return (

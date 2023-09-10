@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useGlobalContext } from "../context";
 
-import ChatRoom from "../components/ChatRoom";
 import io from "socket.io-client";
-import CustomToast from "../components/common/Toast";
-import { isMobile, showToast } from "../utils/common";
+import { isMobile } from "../utils/common";
 import useAsync from "../hooks/useAsync";
 import ChatRoomV2 from "../components/ChatRoomv2";
 import ChatRoomV2Mobile from "../components/ChatRoomv2/ChatRoomV2Mobile";

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ChatEventPlaceholder from "./ChatEventPlaceholder";
 import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
@@ -11,10 +11,14 @@ const ChatRoomV2 = ({ socket }) => {
   const [msgList, setMsgList] = useState([]);
   const [eventId, setEventId] = useState(null);
   const user = JSON.parse(localStorage.getItem("whatzup_user"));
+  const [noMessages, setNoMessages] = useState(false);
 
   useEffect(() => {
     if (eventId) {
       Api(`messages/${eventId}`, "GET", null, false).then((data) => {
+        if (data?.messages?.length === 0) {
+          setNoMessages(true);
+        }
         setMsgList(data?.messages);
       });
     }
@@ -46,7 +50,7 @@ const ChatRoomV2 = ({ socket }) => {
   }, [socket]);
 
   const renderPlaceholderOrLoader = () => {
-    if (msgList || Array.isArray(msgList)) {
+    if (!noMessages) {
       return (
         <div
           className="d-flex justify-content-center"

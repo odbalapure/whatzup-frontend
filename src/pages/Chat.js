@@ -3,13 +3,22 @@ import { useGlobalContext } from "../context";
 
 import ChatRoom from "../components/ChatRoom";
 import io from "socket.io-client";
+import CustomToast from "../components/common/Toast";
+import { showToast } from "../utils/common";
+import useAsync from "../hooks/useAsync";
+import ChatRoomV2 from "../components/ChatRoomv2";
 
 /* Socket io conenction */
-const socket = io("https://whatzzzup.herokuapp.com/");
+const socket = io(
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:5000"
+    : process.env.REACT_APP_API_URL
+);
 
 function Chat() {
+  const { data } = useAsync("events", "GET", null, false);
   const [room, setRoom] = useState("");
-  const [warning, setWarning] = useState("");
+  const [isError, setIsError] = useState("");
   const { userName } = useGlobalContext();
   const [roomJoined, setRoomJoined] = useState(false);
 
@@ -21,52 +30,20 @@ function Chat() {
       setRoomJoined(true);
       socket.emit("join_room", room);
     } else {
-      setWarning("Please choose a room!");
-      setTimeout(() => setWarning(""), 2000);
+      setIsError(true);
+      showToast("Please choose a room to join the chat!", "error");
     }
   };
 
   return (
-    <div style={{ marginTop: "5rem" }}>
-      <div
-        className="container p-4"
-        style={{ border: "1px solid lightgray", borderRadius: "1rem" }}
-      >
-        <select
-          onChange={(e) => setRoom(e.target.value)}
-          className="form-select mb-3"
-          aria-label="Default select example"
-        >
-          <option>Select Chat Room</option>
-          <option value="Drawing Competition">Drawing Competition</option>
-          <option value="Founder's Day">Founder's Day</option>
-        </select>
-        <div className="d-grid gap-2 mb-1">
-          <button onClick={joinRoom} className="btn btn-primary" type="button">
-            Join Room
-          </button>
-        </div>
-        <div className="text-muted">
-          NOTE: You need to choose a room for starting/joining a chat!
-        </div>
-        {warning ? (
-          <div
-            className="d-flex mt-3 justify-content-center alert alert-danger"
-            role="alert"
-          >
-            {warning}
-          </div>
-        ) : null}
-      </div>
-      {room && roomJoined && userName ? (
-        <ChatRoom
-          socket={socket}
-          userName={userName}
-          room={room}
-          roomJoined={roomJoined}
-          setRoomJoined={setRoomJoined}
-        />
-      ) : null}
+    <div className="container" style={{ marginTop: "5rem" }}>
+      <ChatRoomV2
+        socket={socket}
+        userName={userName}
+        room={room}
+        roomJoined={roomJoined}
+        setRoomJoined={setRoomJoined}
+      />
     </div>
   );
 }

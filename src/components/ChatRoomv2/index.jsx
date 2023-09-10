@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react";
+import ChatEventPlaceholder from "./ChatEventPlaceholder";
 import useAsync from "../../hooks/useAsync";
+import { Api } from "../../utils/Api";
 
-const ChatRoomV2 = ({ socket, userName, room }) => {
-  const { data } = useAsync("events", "GET", null, false);
+const ChatRoomV2 = ({ socket }) => {
+  const { data: eventsList } = useAsync("events", "GET", null, false);
+  // const { data: messageList } = useAsync("messages", "GET", null, false);
   const [msg, setMsg] = useState("");
   const [msgList, setMsgList] = useState([]);
   const [eventId, setEventId] = useState(null);
+  const [persistedMessages, setPersistedMessages] = useState([]);
   const user = JSON.parse(localStorage.getItem("whatzup_user"));
+
+  useEffect(() => {
+    if (eventId) {
+      Api(`messages/${eventId}`, "GET", null, false).then((data) => {
+        setPersistedMessages(data?.messages);
+      });
+    }
+  }, [eventId]);
 
   const sendMsg = async () => {
     if (!msg) return;
     const msgData = {
-      room,
       author: user.name,
       email: user.email,
       message: msg,
@@ -30,16 +41,9 @@ const ChatRoomV2 = ({ socket, userName, room }) => {
 
   useEffect(() => {
     socket.on("recieve_msg", (data) => {
-      setMsgList((prev) => [...prev, data]);
+      setMsgList((prev) => [...prev, ...persistedMessages, data]);
     });
   }, [socket]);
-
-  useEffect(() => {
-    setMsgList([]);
-    if (eventId) {
-      socket.emit("join_room", room);
-    }
-  }, [eventId]);
 
   return (
     <div
@@ -52,22 +56,32 @@ const ChatRoomV2 = ({ socket, userName, room }) => {
         className="card"
         style={{ width: "30%", height: "50rem" }}
       >
-        {data?.events?.map((event) => (
-          <div
-            key={event?._id}
-            className="d-flex align-items-center shadow bg-body rounded"
-            style={{ borderBottom: "1px solid lightgray", cursor: "pointer" }}
-            onClick={() => setEventId(event?._id)}
-          >
-            <img
-              className="shadow bg-body rounded"
-              src={event?.image}
-              height="60px"
-              width="60px"
-            />
-            <div className="p-3">{event?.event}</div>
-          </div>
-        ))}
+        {eventsList?.events ? (
+          eventsList?.events?.map((event) => (
+            <div
+              key={event?._id}
+              className="d-flex align-items-center shadow bg-body rounded bg-danger"
+              onClick={() => {
+                setEventId(event?._id);
+                socket.emit("join_room", event?._id.toString());
+              }}
+              style={{
+                borderBottom: "1px solid lightgray",
+                cursor: "pointer"
+              }}
+            >
+              <img
+                width="20%"
+                className="shadow bg-body rounded"
+                src={event?.image}
+                height="60px"
+              />
+              <div className="p-3">{event?.event}</div>
+            </div>
+          ))
+        ) : (
+          <ChatEventPlaceholder />
+        )}
       </div>
       {/* Show message  */}
       <div
@@ -93,20 +107,21 @@ const ChatRoomV2 = ({ socket, userName, room }) => {
             className="card-body"
             id="messages-show-full"
           >
-            {msgList?.map((msg) => (
+            {[...persistedMessages, ...msgList]?.map((msg) => (
               <div
                 style={{
-                  border: "1px solid lightgray",
                   maxWidth: "25rem",
                   borderRadius: "2rem",
-                  marginLeft: msg.email === user.email && '50%',
+                  marginLeft: msg.email === user.email && "50%"
                 }}
                 className={[
                   "card-body w-20 mb-3 p-3",
                   msg.email === user.email
                     ? "alert alert-success"
                     : "alert alert-primary"
-                ].filter(Boolean).join(' ')}
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 key={msg.msgId}
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"

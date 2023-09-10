@@ -17,30 +17,14 @@ const socket = io(
 
 function Chat() {
   const { data } = useAsync("events", "GET", null, false);
-  const [room, setRoom] = useState("");
-  const [isError, setIsError] = useState("");
   const { userName } = useGlobalContext();
   const [roomJoined, setRoomJoined] = useState(false);
-
-  /**
-   * @desc Function to join chat room
-   */
-  const joinRoom = () => {
-    if (room !== "" && userName !== "") {
-      setRoomJoined(true);
-      socket.emit("join_room", room);
-    } else {
-      setIsError(true);
-      showToast("Please choose a room to join the chat!", "error");
-    }
-  };
 
   return (
     <div className="container" style={{ marginTop: "5rem" }}>
       <ChatRoomV2
         socket={socket}
         userName={userName}
-        room={room}
         roomJoined={roomJoined}
         setRoomJoined={setRoomJoined}
       />

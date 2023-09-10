@@ -54,7 +54,7 @@ const ChatRoomV2 = ({ socket }) => {
       return (
         <div
           className="d-flex justify-content-center"
-          style={{ marginTop: "35%" }}
+          style={{ marginTop: "25%" }}
         >
           <div
             className="spinner-border text-secondary"
@@ -70,13 +70,13 @@ const ChatRoomV2 = ({ socket }) => {
   return (
     <div
       className="d-flex"
-      style={{ border: "1px solid lightgray", height: "50rem" }}
+      style={{ border: "1px solid lightgray", height: "40rem" }}
     >
       {/* Show event list */}
       <div
         id="rooms"
         className="card"
-        style={{ width: "30%", height: "50rem" }}
+        style={{ width: "30%", height: "40rem" }}
       >
         {eventsList?.events ? (
           eventsList?.events?.map((event) => (

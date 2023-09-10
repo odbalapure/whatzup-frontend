@@ -123,7 +123,7 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     style={{
                       maxWidth: "15rem",
                       borderRadius: "2rem",
-                      marginLeft: msg.email === user.email && "50%"
+                      marginLeft: msg.email === user.email && "35%"
                     }}
                     className={[
                       "card-body w-20 mb-3 p-3",

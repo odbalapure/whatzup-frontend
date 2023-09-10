@@ -1,3 +1,5 @@
+import { isMobile } from "../../utils/common";
+
 function Footer() {
   const footerStyle = {
     paddingTop: "2rem",
@@ -6,7 +8,8 @@ function Footer() {
     backgroundColor: "#1a2538",
     left: 0,
     bottom: 0,
-    width: "100%"
+    width: "100%",
+    marginTop: isMobile() ? '1rem' : '5rem',
   };
 
   return (

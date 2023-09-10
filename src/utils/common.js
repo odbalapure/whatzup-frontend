@@ -47,6 +47,9 @@ const isAdmin = () => {
   return false;
 };
 
+const isMobileInLandscape = () =>
+  window.innerWidth >= 768 && window.innerWidth <= 1000;
+
 const isMobile = () => window.innerWidth <= 768;
 
-export { showToast, isAdmin, isMobile };
+export { showToast, isAdmin, isMobile, isMobileInLandscape };

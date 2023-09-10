@@ -21,7 +21,6 @@ function App() {
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/chat" element={<Chat />}></Route>
           <Route path="/event" element={<Event />}></Route>
-          <Route path="/chat" element={<Chat />}></Route>
           <Route path="/event/:id" element={<SingleEvent />}></Route>
           <Route path="/announcement" element={<Announcement />}></Route>
           <Route path="/forgot-password" element={<ForgotPassword />}></Route>

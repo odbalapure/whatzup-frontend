@@ -1,12 +1,12 @@
-const ChatEventPlaceholder = () => {
+const ChatEventPlaceholderMobile = () => {
   return (
     <>
       {[1, 2].map((_, index) => (
         <div
           id={index}
           key={index}
-          className="d-flex align-items-center"
-          style={{ borderBottom: "1px solid lightgray" }}
+          className="d-flex align-items-center p-3"
+          style={{ borderBottom: "1px solid lightgray", height: "5rem" }}
         >
           <div>
             <img
@@ -23,4 +23,4 @@ const ChatEventPlaceholder = () => {
   );
 };
 
-export default ChatEventPlaceholder;
+export default ChatEventPlaceholderMobile;

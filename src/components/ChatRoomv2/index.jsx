@@ -45,6 +45,24 @@ const ChatRoomV2 = ({ socket }) => {
     });
   }, [socket]);
 
+  const renderPlaceholderOrLoader = () => {
+    if (msgList || Array.isArray(msgList)) {
+      return (
+        <div
+          className="d-flex justify-content-center"
+          style={{ marginTop: "35%" }}
+        >
+          <div
+            className="spinner-border text-secondary"
+            role="status"
+            style={{ height: "4rem", width: "4rem" }}
+          />
+        </div>
+      );
+    }
+    return <ChatEmptyMessages message="No messages to display!" />;
+  };
+
   return (
     <div
       className="d-flex"
@@ -100,40 +118,34 @@ const ChatRoomV2 = ({ socket }) => {
             className="card-body"
             id="messages-show-full"
           >
-            {!isEmpty(msgList) ? (
-              msgList?.map((msg) => (
-                <div
-                  style={{
-                    maxWidth: "25rem",
-                    borderRadius: "2rem",
-                    marginLeft: msg.email === user.email && "50%"
-                  }}
-                  className={[
-                    "card-body w-20 mb-3 p-3",
-                    msg.email === user.email
-                      ? "alert alert-success"
-                      : "alert alert-primary"
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  key={msg.msgId}
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Your messages will appear green"
-                >
-                  <div>
-                    {msg.author} ({msg.time})
+            {!isEmpty(msgList)
+              ? msgList?.map((msg) => (
+                  <div
+                    style={{
+                      maxWidth: "25rem",
+                      borderRadius: "2rem",
+                      marginLeft: msg.email === user.email && "50%"
+                    }}
+                    className={[
+                      "card-body w-20 mb-3 p-3",
+                      msg.email === user.email
+                        ? "alert alert-success"
+                        : "alert alert-primary"
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    key={msg.msgId}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Your messages will appear green"
+                  >
+                    <div>
+                      {msg.author} ({msg.time})
+                    </div>
+                    <div className="lead">{msg.message}</div>
                   </div>
-                  <div className="lead">{msg.message}</div>
-                </div>
-              ))
-            ) : (
-              <ChatEmptyMessages
-                message={
-                  "There are no old messages present, this is the very beginning of the conversation."
-                }
-              />
-            )}
+                ))
+              : renderPlaceholderOrLoader()}
           </div>
         )}
         {eventId && (

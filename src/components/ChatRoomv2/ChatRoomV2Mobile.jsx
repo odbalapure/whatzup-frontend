@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import useAsync from "../../hooks/useAsync";
-import ChatEventPlaceholder from "./ChatEventPlaceholder";
 import { Api } from "../../utils/Api";
+import ChatEventPlaceholderMobile from "./ChatEventPlaceholderMobile";
+import isEmpty from "../../utils/common";
+import ChatEmptyMessages from "./ChatEmptyMessages";
 
 const ChatRoomV2Mobile = ({ socket }) => {
   const { data: eventsList } = useAsync("events", "GET", null, false);
   const [msg, setMsg] = useState("");
   const [msgList, setMsgList] = useState([]);
   const [eventId, setEventId] = useState(null);
+  const [isNotEmpty, setIsNotEmpty] = useState(false);
   const user = JSON.parse(localStorage.getItem("whatzup_user"));
 
   useEffect(() => {
     if (eventId) {
       Api(`messages/${eventId}`, "GET", null, false).then((data) => {
+        if (!isEmpty(data?.messages)) {
+          setIsNotEmpty(true);
+        }
         setMsgList(data?.messages);
       });
     }
@@ -42,6 +48,24 @@ const ChatRoomV2Mobile = ({ socket }) => {
       setMsgList((prev) => [...prev, data]);
     });
   }, [socket]);
+
+  const renderPlaceholderOrLoader = () => {
+    if (msgList || Array.isArray(msgList)) {
+      return (
+        <div
+          className="d-flex justify-content-center"
+          style={{ marginTop: "50%" }}
+        >
+          <div
+            className="spinner-border text-secondary"
+            role="status"
+            style={{ height: "4rem", width: "4rem" }}
+          />
+        </div>
+      );
+    }
+    return <ChatEmptyMessages message="No messages to display!" />;
+  };
 
   return (
     <div style={{ width: "100%" }}>
@@ -88,37 +112,39 @@ const ChatRoomV2Mobile = ({ socket }) => {
                 </div>
               ))
             ) : (
-              <ChatEventPlaceholder />
+              <ChatEventPlaceholderMobile />
             )}
           </div>
           {/* Event messages */}
           <div style={{ display: !eventId ? "none" : "block" }} className="p-2">
-            {msgList?.map((msg) => (
-              <div
-                style={{
-                  maxWidth: "15rem",
-                  borderRadius: "2rem",
-                  marginLeft: msg.email === user.email && "50%"
-                }}
-                className={[
-                  "card-body w-20 mb-3 p-3",
-                  msg.email === user.email
-                    ? "alert alert-success"
-                    : "alert alert-primary"
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                key={msg.msgId}
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Your messages will appear green"
-              >
-                <div>
-                  {msg.author} ({msg.time})
-                </div>
-                <div>{msg.message}</div>
-              </div>
-            ))}
+            {!isEmpty(msgList)
+              ? msgList?.map((msg) => (
+                  <div
+                    style={{
+                      maxWidth: "15rem",
+                      borderRadius: "2rem",
+                      marginLeft: msg.email === user.email && "50%"
+                    }}
+                    className={[
+                      "card-body w-20 mb-3 p-3",
+                      msg.email === user.email
+                        ? "alert alert-success"
+                        : "alert alert-primary"
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    key={msg.msgId}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Your messages will appear green"
+                  >
+                    <div>
+                      {msg.author} ({msg.time})
+                    </div>
+                    <div>{msg.message}</div>
+                  </div>
+                ))
+              : renderPlaceholderOrLoader()}
           </div>
         </div>
         {eventId ? (

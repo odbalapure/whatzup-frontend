@@ -4,7 +4,7 @@ import { useGlobalContext } from "../context";
 import ChatRoom from "../components/ChatRoom";
 import io from "socket.io-client";
 import CustomToast from "../components/common/Toast";
-import { showToast } from "../utils/common";
+import { isMobile, showToast } from "../utils/common";
 import useAsync from "../hooks/useAsync";
 import ChatRoomV2 from "../components/ChatRoomv2";
 import ChatRoomV2Mobile from "../components/ChatRoomv2/ChatRoomV2Mobile";
@@ -23,13 +23,16 @@ function Chat() {
 
   return (
     <div className="container" style={{ marginTop: "5rem" }}>
-      {/* <ChatRoomV2
-        socket={socket}
-        userName={userName}
-        roomJoined={roomJoined}
-        setRoomJoined={setRoomJoined}
-      /> */}
-      <ChatRoomV2Mobile socket={socket} />
+      {isMobile() ? (
+        <ChatRoomV2Mobile socket={socket} />
+      ) : (
+        <ChatRoomV2
+          socket={socket}
+          userName={userName}
+          roomJoined={roomJoined}
+          setRoomJoined={setRoomJoined}
+        />
+      )}
     </div>
   );
 }

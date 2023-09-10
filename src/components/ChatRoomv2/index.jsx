@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatEventPlaceholder from "./ChatEventPlaceholder";
 import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
+import ChatEmptyMessages from "./ChatEmptyMessages";
+import isEmpty from "../../utils/common";
 
 const ChatRoomV2 = ({ socket }) => {
   const { data: eventsList } = useAsync("events", "GET", null, false);
-  // const { data: messageList } = useAsync("messages", "GET", null, false);
   const [msg, setMsg] = useState("");
   const [msgList, setMsgList] = useState([]);
   const [eventId, setEventId] = useState(null);
-  const [persistedMessages, setPersistedMessages] = useState([]);
   const user = JSON.parse(localStorage.getItem("whatzup_user"));
 
   useEffect(() => {
     if (eventId) {
       Api(`messages/${eventId}`, "GET", null, false).then((data) => {
-        setPersistedMessages(data?.messages);
+        setMsgList(data?.messages);
       });
     }
   }, [eventId]);
@@ -41,7 +41,7 @@ const ChatRoomV2 = ({ socket }) => {
 
   useEffect(() => {
     socket.on("recieve_msg", (data) => {
-      setMsgList((prev) => [...prev, ...persistedMessages, data]);
+      setMsgList((prev) => [...prev, data]);
     });
   }, [socket]);
 
@@ -63,6 +63,7 @@ const ChatRoomV2 = ({ socket }) => {
               className="d-flex align-items-center shadow bg-body rounded bg-danger"
               onClick={() => {
                 setEventId(event?._id);
+                setMsgList([]);
                 socket.emit("join_room", event?._id.toString());
               }}
               style={{
@@ -90,49 +91,49 @@ const ChatRoomV2 = ({ socket }) => {
         style={{ width: "70%" }}
       >
         {!eventId ? (
-          <div id="messages-show-empty">
-            <div
-              id="empty-messages"
-              className="text-muted d-flex flex-column align-items-center"
-              style={{ marginTop: "30%" }}
-            >
-              <i style={{ fontSize: "5rem" }} className="bi bi-calendar-day" />
-              <div>Please select an event to start chatting</div>
-              <div>Thank You</div>
-            </div>
-          </div>
+          <ChatEmptyMessages
+            message={"Please select an event to start chatting"}
+          />
         ) : (
           <div
             style={{ overflow: "auto" }}
             className="card-body"
             id="messages-show-full"
           >
-            {[...persistedMessages, ...msgList]?.map((msg) => (
-              <div
-                style={{
-                  maxWidth: "25rem",
-                  borderRadius: "2rem",
-                  marginLeft: msg.email === user.email && "50%"
-                }}
-                className={[
-                  "card-body w-20 mb-3 p-3",
-                  msg.email === user.email
-                    ? "alert alert-success"
-                    : "alert alert-primary"
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                key={msg.msgId}
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Your messages will appear green"
-              >
-                <div>
-                  {msg.author} ({msg.time})
+            {!isEmpty(msgList) ? (
+              msgList?.map((msg) => (
+                <div
+                  style={{
+                    maxWidth: "25rem",
+                    borderRadius: "2rem",
+                    marginLeft: msg.email === user.email && "50%"
+                  }}
+                  className={[
+                    "card-body w-20 mb-3 p-3",
+                    msg.email === user.email
+                      ? "alert alert-success"
+                      : "alert alert-primary"
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={msg.msgId}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Your messages will appear green"
+                >
+                  <div>
+                    {msg.author} ({msg.time})
+                  </div>
+                  <div className="lead">{msg.message}</div>
                 </div>
-                <div className="lead">{msg.message}</div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <ChatEmptyMessages
+                message={
+                  "There are no old messages present, this is the very beginning of the conversation."
+                }
+              />
+            )}
           </div>
         )}
         {eventId && (

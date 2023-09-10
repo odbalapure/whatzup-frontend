@@ -7,6 +7,7 @@ import CustomToast from "../components/common/Toast";
 import { showToast } from "../utils/common";
 import useAsync from "../hooks/useAsync";
 import ChatRoomV2 from "../components/ChatRoomv2";
+import ChatRoomV2Mobile from "../components/ChatRoomv2/ChatRoomV2Mobile";
 
 /* Socket io conenction */
 const socket = io(
@@ -28,6 +29,7 @@ function Chat() {
         roomJoined={roomJoined}
         setRoomJoined={setRoomJoined}
       />
+      <ChatRoomV2Mobile />
     </div>
   );
 }

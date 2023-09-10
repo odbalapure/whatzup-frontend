@@ -23,13 +23,13 @@ function Chat() {
 
   return (
     <div className="container" style={{ marginTop: "5rem" }}>
-      <ChatRoomV2
+      {/* <ChatRoomV2
         socket={socket}
         userName={userName}
         roomJoined={roomJoined}
         setRoomJoined={setRoomJoined}
-      />
-      <ChatRoomV2Mobile />
+      /> */}
+      <ChatRoomV2Mobile socket={socket} />
     </div>
   );
 }

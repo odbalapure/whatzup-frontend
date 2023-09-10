@@ -162,7 +162,7 @@ const ChatRoomV2 = ({ socket }) => {
                 data-bs-placement="top"
                 title="Send Message"
                 onClick={sendMsg}
-                style={{ borderRadius: "2rem" }}
+                style={{ borderRadius: "50%" }}
               ></button>
             </form>
           </div>

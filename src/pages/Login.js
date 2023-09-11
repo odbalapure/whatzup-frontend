@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import { Api } from "../utils/Api";
 import { showToast } from "../utils/common";
 import CustomToast from "../components/common/Toast";
+import Spinner from "../components/common/Spinner";
 
 function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const navigateToHome = () => navigate("/", { replace: true });
@@ -24,6 +26,7 @@ function Login() {
       showToast("Email & password are mandatory!", "error");
       return;
     }
+    setIsLoading(true);
     const response = await Api(
       "auth/login",
       "POST",
@@ -32,10 +35,12 @@ function Login() {
     );
     if (response?.error) {
       setIsError(true);
+      setIsLoading(false);
       showToast(response?.error, "error");
       return;
     }
     showToast("Login was successful, welcome", "success");
+    setIsLoading(false);
     localStorage.setItem("whatzup_user", JSON.stringify(response));
     navigateToHome();
     window.location.reload(false);
@@ -96,6 +101,7 @@ function Login() {
               </Link>
             </div>
           </div>
+          {isLoading && <Spinner />}
         </form>
       </div>
     </div>

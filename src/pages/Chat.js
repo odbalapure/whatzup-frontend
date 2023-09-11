@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "../context";
 
 import io from "socket.io-client";
 import { isMobile } from "../utils/common";
-import useAsync from "../hooks/useAsync";
 import ChatRoomV2 from "../components/ChatRoomv2";
 import ChatRoomV2Mobile from "../components/ChatRoomv2/ChatRoomV2Mobile";
 import Footer from "../components/Footer";
@@ -16,7 +15,6 @@ const socket = io(
 );
 
 function Chat() {
-  const { data } = useAsync("events", "GET", null, false);
   const { userName } = useGlobalContext();
   const [roomJoined, setRoomJoined] = useState(false);
 

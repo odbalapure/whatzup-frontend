@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useGlobalContext } from "../context";
+import { isMobile } from "../utils/common";
 
 function Navbar() {
   /* Navigate programatically */
@@ -24,7 +25,14 @@ function Navbar() {
         className="navbar navbar-expand-lg navbar-dark fixed-top"
         style={{ backgroundColor: "#0d101c" }}
       >
-        <div className="container-fluid">
+        <div className="container-fluid d-flex">
+          {isMobile() && (
+            <i
+              style={{ fontSize: "1.5rem" }}
+              onClick={() => navigate(-1)}
+              className="bi bi-chevron-left text-white"
+            />
+          )}
           <Link style={{ textDecoration: "none", fontWeight: "600" }} to="/">
             <span className="navbar-brand text-success fs-3">
               Whatzup{" "}

@@ -98,6 +98,7 @@ const ChatRoomV2 = ({ socket }) => {
                 className="shadow bg-body rounded"
                 src={event?.image}
                 height="60px"
+                alt="event_image_desktop"
               />
               <div className="p-3">{event?.event}</div>
             </div>
@@ -112,6 +113,11 @@ const ChatRoomV2 = ({ socket }) => {
         className="card"
         style={{ width: "70%" }}
       >
+        <div className="card-header">
+          <div className="lead fw-bold">
+            {eventsList?.events?.find((event) => event._id === eventId)?.event}
+          </div>
+        </div>
         {!eventId ? (
           <ChatEmptyMessages
             message={"Please select an event to start chatting"}

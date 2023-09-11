@@ -107,6 +107,7 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     className="shadow bg-body rounded"
                     src={event?.image}
                     height="60px"
+                    alt="event-thumbnail"
                   />
                   <div className="p-3">{event?.event}</div>
                 </div>

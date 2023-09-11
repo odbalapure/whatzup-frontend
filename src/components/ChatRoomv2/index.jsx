@@ -113,11 +113,16 @@ const ChatRoomV2 = ({ socket }) => {
         className="card"
         style={{ width: "70%" }}
       >
-        <div className="card-header">
-          <div className="lead fw-bold">
-            {eventsList?.events?.find((event) => event._id === eventId)?.event}
+        {eventId && (
+          <div className="card-header">
+            <div className="lead fw-bold">
+              {
+                eventsList?.events?.find((event) => event._id === eventId)
+                  ?.event
+              }
+            </div>
           </div>
-        </div>
+        )}
         {!eventId ? (
           <ChatEmptyMessages
             message={"Please select an event to start chatting"}

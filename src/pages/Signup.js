@@ -2,10 +2,12 @@ import { useRef, useState } from "react";
 import { Api } from "../utils/Api";
 import { showToast } from "../utils/common";
 import CustomToast from "../components/common/Toast";
+import Spinner from "../components/common/Spinner";
 
 function Register() {
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   /* Form fields */
   const nameRef = useRef();
@@ -34,7 +36,7 @@ function Register() {
       );
       return;
     }
-
+    setIsLoading(true);
     try {
       const response = await Api(
         "auth/register",
@@ -49,7 +51,8 @@ function Register() {
       );
       if (response?.error) {
         setIsError(true);
-        showToast(response?.error, "error", {position: "top-right"}, 2000);
+        setIsLoading(false);
+        showToast(response?.error, "error", { position: "top-right" });
         return;
       }
       setIsSuccess(true);
@@ -57,9 +60,10 @@ function Register() {
         `An email has been sent to ${response?.email} , to confirm your registration!`,
         "success",
         { position: "top-right" },
-        2000,
+        0
       );
       localStorage.setItem("url_shortner_user", JSON.stringify(response));
+      setIsLoading(false);
     } catch (error) {
       setIsError("User registration failed, try again some time later...");
       showToast("User registration failed, try again some time later", "error");
@@ -80,7 +84,7 @@ function Register() {
           boxSizing: "border-box"
         }}
       >
-        <form>
+        <form style={{ psotion: "relative" }}>
           <div className="row">
             <div className="col-lg-6 col-md-12 mb-3">
               <input
@@ -128,6 +132,7 @@ function Register() {
               SIGN UP
             </button>
           </div>
+          {isLoading && <Spinner />}
         </form>
       </div>
       <div>{isError || isSuccess ? <CustomToast /> : null}</div>

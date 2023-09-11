@@ -5,6 +5,7 @@ import CustomToast from "../components/common/Toast";
 
 function Register() {
   const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   /* Form fields */
   const nameRef = useRef();
@@ -48,14 +49,15 @@ function Register() {
       );
       if (response?.error) {
         setIsError(true);
-        showToast(response?.error, "error");
+        showToast(response?.error, "error", {position: "top-right"}, 2000);
         return;
       }
+      setIsSuccess(true);
       showToast(
         `An email has been sent to ${response?.email} , to confirm your registration!`,
         "success",
         { position: "top-right" },
-        0
+        2000,
       );
       localStorage.setItem("url_shortner_user", JSON.stringify(response));
     } catch (error) {
@@ -128,7 +130,7 @@ function Register() {
           </div>
         </form>
       </div>
-      <div>{isError ? <CustomToast /> : null}</div>
+      <div>{isError || isSuccess ? <CustomToast /> : null}</div>
     </div>
   );
 }

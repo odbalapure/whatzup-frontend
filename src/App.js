@@ -23,13 +23,10 @@ function App() {
       handleOrientationChange();
       window.location.reload();
     });
-
     return () => {
       window.removeEventListener("resize", handleOrientationChange);
     };
-  }, []);
-
-  console.log("orientation", orientation);
+  }, [orientation]);
 
   return (
     <div style={{ marginTop: "5rem" }}>

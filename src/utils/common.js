@@ -52,4 +52,21 @@ const isMobileInLandscape = () =>
 
 const isMobile = () => window.innerWidth <= 768;
 
-export { showToast, isAdmin, isMobile, isMobileInLandscape };
+const convertTo12HourFormat = (date) => {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let ap = hours >= 12 ? "pm" : "am";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  minutes = minutes.toString().padStart(2, "0");
+  let mergeTime = hours + ":" + minutes + " " + ap;
+  return mergeTime;
+};
+
+export {
+  showToast,
+  isAdmin,
+  isMobile,
+  isMobileInLandscape,
+  convertTo12HourFormat
+};

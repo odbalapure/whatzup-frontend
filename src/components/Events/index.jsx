@@ -16,7 +16,7 @@ function Events() {
     navigate(`/event/${event._id}`, { state: event }, { replace: true });
 
   return (
-    <div className="mt-5 mb-5">
+    <div className="">
       <div className="fs-4">Upcoming Events</div>
       <hr />
       <div className="d-flex" style={{ overflow: "auto" }}>

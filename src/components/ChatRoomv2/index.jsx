@@ -3,7 +3,7 @@ import ChatEventPlaceholder from "./ChatEventPlaceholder";
 import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
 import ChatEmptyMessages from "./ChatEmptyMessages";
-import isEmpty from "../../utils/common";
+import isEmpty, { convertTo12HourFormat } from "../../utils/common";
 
 const ChatRoomV2 = ({ socket }) => {
   const { data: eventsList } = useAsync("events", "GET", null, false);
@@ -36,23 +36,13 @@ const ChatRoomV2 = ({ socket }) => {
 
   const sendMsg = async () => {
     if (!msg) return;
-
-    const date = new Date();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-
     const msgData = {
       author: user.name,
       email: user.email,
       message: msg,
-      time:
-        (hour > 9 ? hour : `0${hour}`) +
-        ":" +
-        (minute > 9 ? minute : `0${minute}`),
-      msgId: Date.now().toString(),
+      time: convertTo12HourFormat(new Date()),
       eventId
     };
-
     await socket.emit("send_msg", msgData);
     setMsgList((prev) => [...prev, msgData]);
     setMsg(null);

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
 import ChatEventPlaceholderMobile from "./ChatEventPlaceholderMobile";
-import isEmpty from "../../utils/common";
+import isEmpty, { convertTo12HourFormat } from "../../utils/common";
 import ChatEmptyMessages from "./ChatEmptyMessages";
 
 const ChatRoomV2Mobile = ({ socket }) => {
@@ -36,23 +36,14 @@ const ChatRoomV2Mobile = ({ socket }) => {
 
   const sendMsg = async () => {
     if (!msg) return;
-
-    const date = new Date();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-
     const msgData = {
       author: user.name,
       email: user.email,
       message: msg,
-      time:
-        (hour > 9 ? hour : `0${hour}`) +
-        ":" +
-        (minute > 9 ? minute : `0${minute}`),
+      time: convertTo12HourFormat(new Date()),
       msgId: Date.now().toString(),
       eventId
     };
-
     await socket.emit("send_msg", msgData);
     setMsgList((prev) => [...prev, msgData]);
     setMsg(null);
@@ -157,10 +148,11 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     data-bs-placement="top"
                     title="Your messages will appear green"
                   >
-                    <div>
-                      {msg.author} ({msg.time})
+                    <div className="fw-bold">
+                      {msg.author}
                     </div>
                     <div>{msg.message}</div>
+                    <div className="text-end">{msg.time}</div>
                   </div>
                 ))}
               </div>

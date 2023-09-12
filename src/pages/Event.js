@@ -1,11 +1,30 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
+import { showToast } from "../utils/common";
+import CustomToast from "../components/common/Toast";
+import Spinner from "../components/common/Spinner";
 
 const url = process.env.REACT_APP_API_URL + "/events";
 
 function Event() {
+  const navigate = useNavigate();
+  const navigateToHome = useCallback(
+    () => navigate("/", { replace: true }),
+    [navigate]
+  );
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("whatzup_user"));
+    if (!user?.token || user?.role !== "ADMIN") {
+      localStorage.clear();
+      navigateToHome();
+    }
+  }, [navigateToHome]);
+
   /* Events list */
   const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   /* Create editable object */
   const [editMode, setEditMode] = useState(false);
@@ -41,7 +60,8 @@ function Event() {
       description.current.value === ""
     ) {
       setTimeout(() => setWarning(""), 2000);
-      setWarning("All fields are madatory!");
+      setWarning(true);
+      showToast('All fields are madatory', 'error');
       setMsg("");
       return;
     }
@@ -60,14 +80,14 @@ function Event() {
             image: image.current.value,
             description: description.current.value,
             contactPersonName: contactPersonName.current.value,
-            contactPersonPhone: "+91" + contactPersonPhone.current.value,
+            contactPersonPhone: "+91" + contactPersonPhone.current.value
           },
           {
             headers: {
               Authorization:
                 "Bearer " +
-                JSON.parse(localStorage.getItem("whatzup_user")).token,
-            },
+                JSON.parse(localStorage.getItem("whatzup_user")).token
+            }
           }
         );
 
@@ -87,10 +107,13 @@ function Event() {
    */
   const getAllEvents = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(url);
       setEvents(response.data.events);
       setWarning("");
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       setWarning("Something went wrong while fetching events...");
     }
   };
@@ -128,7 +151,7 @@ function Event() {
         image: image.current.value,
         description: description.current.value,
         contactPersonName: contactPersonName.current.value,
-        contactPersonPhone: contactPersonPhone.current.value,
+        contactPersonPhone: contactPersonPhone.current.value
       });
 
       setEditObj({});
@@ -169,7 +192,7 @@ function Event() {
           padding: "1rem",
           margin: "2rem",
           borderRadius: "1rem",
-          boxSizing: "border-box",
+          boxSizing: "border-box"
         }}
       >
         <form onSubmit={(e) => handleSubmit(e)}>
@@ -218,7 +241,7 @@ function Event() {
               className="col-lg-2 col-md-12"
               style={{
                 marginTop: "0.3rem",
-                textAlign: "center",
+                textAlign: "center"
               }}
             >
               To
@@ -288,7 +311,7 @@ function Event() {
           )}
         </form>
       </div>
-      <div className="container mt-4 mb-5" style={{ oveflow: "auto" }}>
+      <div className="container mt-4" style={{ overflowX: "auto" }}>
         <table className="table table-striped table-hover">
           <thead>
             <tr>
@@ -342,16 +365,6 @@ function Event() {
         </table>
       </div>
       <div>
-        {warning ? (
-          <p
-            className="d-flex justify-content-center alert alert-danger"
-            role="alert"
-          >
-            {warning}
-          </p>
-        ) : null}
-      </div>
-      <div>
         {msg ? (
           <p
             className="d-flex justify-content-center alert alert-success"
@@ -361,6 +374,8 @@ function Event() {
           </p>
         ) : null}
       </div>
+      {warning && <CustomToast />}
+      {isLoading && <Spinner top="40rem" />}
     </div>
   );
 }

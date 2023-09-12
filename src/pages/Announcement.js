@@ -1,18 +1,38 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
+import useAsync from "../hooks/useAsync";
+import Spinner from "../components/common/Spinner";
+import { Api } from "../utils/Api";
+import CustomToast from "../components/common/Toast";
+import { showToast } from "../utils/common";
 
-const url = process.env.REACT_APP_API_URL + "/announcements";
+const url = process.env.REACT_APP_API_URL + "/api/v1/announcements";
 
 function Announcement() {
+  const navigate = useNavigate();
+  const navigateToHome = useCallback(
+    () => navigate("/", { replace: true }),
+    [navigate]
+  );
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("whatzup_user"));
+    if (!user?.token || user?.role !== "ADMIN") {
+      localStorage.clear();
+      navigateToHome();
+    }
+  }, [navigateToHome]);
+
   /* Announcement List */
-  const [announcements, setAnnouncements] = useState([]);
+  const { data } = useAsync("announcements", "GET", null, false);
 
   /* Create editable object */
   const [editMode, setEditMode] = useState(false);
   const [editObj, setEditObj] = useState({});
 
   /* Operation status */
-  const [warning, setWarning] = useState("");
+  const [isError, setIsError] = useState(false);
   const [msg, setMsg] = useState("");
 
   /* Form fields */
@@ -34,58 +54,40 @@ function Announcement() {
       message === "" ||
       importance === ""
     ) {
-      setWarning("All fields are mandatory!");
-      setTimeout(() => setWarning(""), 2000);
-      setMsg("");
+      setIsError(true);
+      showToast('All fields are mandatory!', 'error');
       return;
     }
 
     try {
       setMsg("Creating announcement please wait...");
+      const response = await Api(
+        "announcements",
+        "POST",
+        {
+          announcement: announcement.current.value,
+          area: area.current.value,
+          message: message.current.value,
+          contactPersonName: contactPersonName.current.value,
+          contactPersonPhone: "+91" + contactPersonPhone.current.value,
+          importance: importance,
+          createdAt: new Date().toString()
+        },
+        true
+      );
 
-      if (JSON.parse(localStorage.getItem("whatzup_user"))) {
-        const response = await axios.post(
-          url,
-          {
-            announcement: announcement.current.value,
-            area: area.current.value,
-            message: message.current.value,
-            contactPersonName: contactPersonName.current.value,
-            contactPersonPhone: "+91" + contactPersonPhone.current.value,
-            importance: importance,
-            createdAt: new Date().toString(),
-          },
-          {
-            headers: {
-              Authorization:
-                "Bearer " +
-                JSON.parse(localStorage.getItem("whatzup_user")).token,
-            },
-          }
-        );
-
-        getAllAnnouncements();
-        setWarning("");
-        setMsg(response.data.msg);
-        setTimeout(() => setMsg(""), 2500);
+      if (response?.error) {
+        setIsError(true);
+      } else {
+        setIsError(false);
       }
-    } catch (err) {
-      setWarning("Something went wrong while creating announcement...");
-      setMsg("");
-    }
-  };
 
-  /**
-   * @desc Get announcements
-   * @method GET
-   */
-  const getAllAnnouncements = async () => {
-    try {
-      const response = await axios.get(url);
-      setAnnouncements(response.data.announcements);
-      setWarning("");
+      setIsError("");
+      setMsg(response.data.msg);
+      setTimeout(() => setMsg(""), 2500);
     } catch (err) {
-      setWarning("Something went wrong while fetching announcements...");
+      setIsError("Something went wrong while creating announcement...");
+      setMsg("");
     }
   };
 
@@ -95,16 +97,11 @@ function Announcement() {
   const deleteAnnoucement = async (id) => {
     try {
       await axios.delete(`${url}/${id}`);
-      setWarning("");
-      getAllAnnouncements();
+      setIsError("");
     } catch (err) {
-      setWarning("Something went wrong while fetching announcements...");
+      setIsError("Something went wrong while fetching announcements...");
     }
   };
-
-  useEffect(() => {
-    getAllAnnouncements();
-  }, []);
 
   /**
    * @desc Edit announcement
@@ -119,17 +116,16 @@ function Announcement() {
         message: message.current.value,
         contactPersonName: contactPersonName.current.value,
         contactPersonPhone: contactPersonPhone.current.value,
-        importance: importance || editObj.importance,
+        importance: importance || editObj.importance
       });
 
       setEditObj({});
-      setWarning("");
+      setIsError("");
       setMsg("Event edited!");
       setEditMode(false);
       setTimeout(() => setMsg(""), 2000);
-      getAllAnnouncements();
     } catch (err) {
-      setWarning("Something went wrong while fetching announcements...");
+      setIsError("Something went wrong while fetching announcements...");
     }
   };
 
@@ -139,7 +135,7 @@ function Announcement() {
   const createEditableObject = async (id) => {
     setEditObj({});
     setEditMode((prev) => !prev);
-    const announcement = announcements.find(
+    const announcement = data?.announcements.find(
       (announcement) => announcement._id === id
     );
     setEditObj(announcement);
@@ -162,7 +158,7 @@ function Announcement() {
           padding: "1rem",
           margin: "2rem",
           borderRadius: "1rem",
-          boxSizing: "border-box",
+          boxSizing: "border-box"
         }}
       >
         <form onSubmit={(e) => handleSubmit(e)}>
@@ -266,7 +262,7 @@ function Announcement() {
             <div className="d-grid gap-2">
               <button
                 onClick={editAnnouncement}
-                className="btn btn-warning"
+                className="btn btn-isError"
                 type="submit"
               >
                 Edit Announcement
@@ -286,16 +282,6 @@ function Announcement() {
         </form>
       </div>
       <div>
-        {warning ? (
-          <p
-            className="d-flex justify-content-center alert alert-danger"
-            role="alert"
-          >
-            {warning}
-          </p>
-        ) : null}
-      </div>
-      <div>
         {msg ? (
           <p
             className="d-flex justify-content-center alert alert-success"
@@ -305,57 +291,62 @@ function Announcement() {
           </p>
         ) : null}
       </div>
-      <div className="container mt-4 mb-5" style={{ oveflow: "auto" }}>
-        <table className="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Title</th>
-              <th scope="col">Area</th>
-              <th scope="col">Message</th>
-              <th scope="col">Contact Person</th>
-              <th scope="col">Importance</th>
-              <th scope="col">Edit/Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {announcements.map((announcement) => {
-              return (
-                <tr key={announcement._id}>
-                  <td>{announcement.announcement}</td>
-                  <td>{announcement.area}</td>
-                  <td>{announcement.message}</td>
-                  <td>
-                    {announcement.contactPersonName} (
-                    {announcement.contactPersonPhone})
-                  </td>
-                  <td>{announcement.importance}</td>
-                  <td>
-                    <div
-                      className="btn-group"
-                      role="group"
-                      aria-label="Basic example"
-                    >
-                      <button
-                        onClick={() => createEditableObject(announcement._id)}
-                        type="button"
-                        className="btn btn-warning"
+      <div className="p-sm-5" style={{ overflowX: "auto" }}>
+        {data?.announcements ? (
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Area</th>
+                <th scope="col">Message</th>
+                <th scope="col">Contact Person</th>
+                <th scope="col">Importance</th>
+                <th scope="col">Edit/Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.announcements.map((announcement) => {
+                return (
+                  <tr key={announcement._id}>
+                    <td>{announcement.announcement}</td>
+                    <td>{announcement.area}</td>
+                    <td>{announcement.message}</td>
+                    <td>
+                      {announcement.contactPersonName} (
+                      {announcement.contactPersonPhone})
+                    </td>
+                    <td>{announcement.importance}</td>
+                    <td>
+                      <div
+                        className="btn-group"
+                        role="group"
+                        aria-label="Basic example"
                       >
-                        <i className="bi bi-pencil-fill"></i>
-                      </button>
-                      <button
-                        onClick={() => deleteAnnoucement(announcement._id)}
-                        type="button"
-                        className="btn btn-danger"
-                      >
-                        <i className="bi bi-trash-fill"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        <button
+                          onClick={() => createEditableObject(announcement._id)}
+                          type="button"
+                          className="btn btn-warning"
+                        >
+                          <i className="bi bi-pencil-fill"></i>
+                        </button>
+                        <button
+                          onClick={() => deleteAnnoucement(announcement._id)}
+                          type="button"
+                          className="btn btn-danger"
+                        >
+                          <i className="bi bi-trash-fill"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <Spinner top="40rem" />
+        )}
+        {isError && <CustomToast />}
       </div>
     </div>
   );

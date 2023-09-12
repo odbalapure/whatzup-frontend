@@ -1,10 +1,10 @@
-const Spinner = () => (
+const Spinner = (props) => (
   <div
     style={{
       position: "absolute",
       left: 0,
       right: 0,
-      top: '10rem',
+      top: props.top || '10rem',
       marginLeft: 'auto',
       marginRight: 'auto',
     }}

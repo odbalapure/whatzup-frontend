@@ -18,7 +18,7 @@ export async function Api(
   if (authNeeded) {
     const authData = JSON.parse(localStorage.getItem("whatzup_user"));
     const { token } = authData;
-    header["Authorization"] = token;
+    header["Authorization"] = `Bearer ${token}`;
   }
   const opts = { method: type, headers: header };
   if (type !== "GET" && body) {

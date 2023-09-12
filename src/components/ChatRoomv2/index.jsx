@@ -168,12 +168,12 @@ const ChatRoomV2 = ({ socket }) => {
                     title="Your messages will appear green"
                   >
                     <div className="d-flex justify-content-between">
-                      <div>
+                      <div className="fw-bold">
                         {msg.email === user.email ? "You" : msg.author}{" "}
                       </div>
-                      <div>{msg.time}</div>
                     </div>
                     <div className="lead">{msg.message}</div>
+                    <div className="text-end">{msg.time}</div>
                   </div>
                 ))}
               </div>

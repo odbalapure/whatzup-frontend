@@ -2,35 +2,38 @@ import { useRef, useState } from "react";
 import { showToast } from "../utils/common";
 import CustomToast from "./common/Toast";
 import { Api } from "../utils/Api";
+import Spinner from "./common/Spinner";
 
 function ForgotPassword() {
   const emailRef = useRef();
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const forgotPasswordDetails = async (event) => {
     event.preventDefault();
-    if (emailRef) {
-      if (emailRef.current.value === "") {
-        setIsError(true);
-        showToast("Please enter an email id!", "error");
-        return;
-      }
-      const response = await Api(
-        "auth/forgot-password",
-        "PATCH",
-        {
-          email: emailRef.current.value
-        },
-        false
-      );
-      if (response?.error) {
-        setIsError(true);
-        showToast(response?.error, "error");
-      } else {
-        setIsSuccess(true);
-        showToast(response?.msg, "success");
-      }
+    if (emailRef.current.value === "") {
+      setIsError(true);
+      showToast("Please enter an email id!", "error");
+      return;
+    }
+    setIsLoading(true);
+    const response = await Api(
+      "auth/forgot-password",
+      "PATCH",
+      {
+        email: emailRef.current.value
+      },
+      false
+    );
+    if (response?.error) {
+      setIsError(true);
+      setIsLoading(false);
+      showToast(response?.error, "error");
+    } else {
+      setIsSuccess(true);
+      showToast(response?.msg, "success");
+      setIsLoading(false);
     }
   };
 
@@ -67,8 +70,8 @@ function ForgotPassword() {
           </button>
         </div>
       </form>
-      {isError && <CustomToast />}
-      {isSuccess && <CustomToast />}
+      {(isError || isSuccess) && <CustomToast />}
+      {isLoading && <Spinner />}
     </div>
   );
 }

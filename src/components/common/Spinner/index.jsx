@@ -1,13 +1,14 @@
-import { isMobile } from "../../../utils/common";
-
 const Spinner = () => (
   <div
     style={{
       position: "absolute",
-      top: isMobile() ? "20%" : "15%",
-      left: isMobile() ? "45%" : "50%"
+      left: 0,
+      right: 0,
+      top: '10rem',
+      marginLeft: 'auto',
+      marginRight: 'auto',
     }}
-    className="d-flex justify-content-center text-secondary"
+    className="d-flex justify-content-center align-items-center text-secondary"
   >
     <div
       style={{ height: "3rem", width: "3rem" }}

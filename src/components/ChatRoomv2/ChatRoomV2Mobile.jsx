@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
 import ChatEventPlaceholderMobile from "./ChatEventPlaceholderMobile";
@@ -12,6 +12,16 @@ const ChatRoomV2Mobile = ({ socket }) => {
   const [eventId, setEventId] = useState(null);
   const user = JSON.parse(localStorage.getItem("whatzup_user"));
   const [noMessages, setNoMessages] = useState(false);
+  const showMessageRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (showMessageRef.current) {
+      showMessageRef.current.scrollTop = showMessageRef.current.scrollHeight;
+    }
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [msgList, eventId]);
 
   useEffect(() => {
     if (eventId) {
@@ -89,7 +99,11 @@ const ChatRoomV2Mobile = ({ socket }) => {
             </div>
           </div>
         </div>
-        <div style={{ overflow: "auto", padding: 0 }} className="card-body">
+        <div
+          ref={showMessageRef}
+          style={{ overflow: "auto", padding: 0 }}
+          className="card-body"
+        >
           {/* Event list */}
           <div style={{ display: eventId ? "none" : "block" }}>
             {eventsList?.events ? (
@@ -128,7 +142,8 @@ const ChatRoomV2Mobile = ({ socket }) => {
                 {msgList?.map((msg) => (
                   <div
                     style={{
-                      maxWidth: "15rem"
+                      maxWidth: "15rem",
+                      display: "inline-block"
                     }}
                     className={[
                       msg.email === user.email

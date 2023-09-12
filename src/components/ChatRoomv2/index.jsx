@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatEventPlaceholder from "./ChatEventPlaceholder";
 import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
@@ -12,6 +12,16 @@ const ChatRoomV2 = ({ socket }) => {
   const [eventId, setEventId] = useState(null);
   const user = JSON.parse(localStorage.getItem("whatzup_user"));
   const [noMessages, setNoMessages] = useState(false);
+  const showMessageRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (showMessageRef.current) {
+      showMessageRef.current.scrollTop = showMessageRef.current.scrollHeight;
+    }
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [msgList, eventId]);
 
   useEffect(() => {
     if (eventId) {
@@ -136,7 +146,8 @@ const ChatRoomV2 = ({ socket }) => {
           <div
             style={{ overflow: "auto" }}
             className="card-body"
-            id="messages-show-full"
+            id="messages-show-full-desktop"
+            ref={showMessageRef}
           >
             {!isEmpty(msgList) ? (
               <div className="d-flex flex-column">
@@ -144,7 +155,7 @@ const ChatRoomV2 = ({ socket }) => {
                   <div
                     style={{
                       maxWidth: "20rem",
-                      display: "inline-block",
+                      display: "inline-block"
                     }}
                     className={[
                       msg.email === user.email

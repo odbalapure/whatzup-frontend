@@ -11,10 +11,6 @@ const UrgetCard = (props) => {
         <h6 className="card-subtitle mb-2 text-muted">{urgent.area}</h6>
         <div className="card-text lead mb-2">{urgent.message}</div>
         <div className="card-text">
-          <span style={{ fontWeight: "500" }}>Created:</span>{" "}
-          {new Date(urgent.createdAt).toString().substring(0, 15)}
-        </div>
-        <div className="card-text">
           <span style={{ fontWeight: "500" }}>Contact:</span>{" "}
           {urgent.contactPersonName} ({urgent.contactPersonPhone})
         </div>

@@ -23,7 +23,9 @@ function SingleEvent() {
 
   useEffect(() => {
     Api(`events/${eventId}`, "GET", null, false).then((data) => {
-      data?.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      data?.comments.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
       setComments(data?.comments);
     });
   }, [isSuccess, eventId]);
@@ -67,7 +69,7 @@ function SingleEvent() {
     <>
       <div
         className="container"
-        style={{ marginTop: "5rem", marginBottom: "5rem" }}
+        style={{ marginTop: "5rem", marginBottom: "1rem" }}
       >
         <div
           style={{
@@ -137,9 +139,13 @@ function SingleEvent() {
             </button>
           </div>
 
-          <div className="mt-4 fw-bold fs-3">{comments?.length} Comments</div>
           {!isEmpty(comments) ? (
-            <CommentsPaginationWrapper comments={comments} />
+            <>
+              <div className="mt-4 fw-bold fs-3">
+                {comments?.length} Comments
+              </div>
+              <CommentsPaginationWrapper comments={comments} />
+            </>
           ) : (
             <CommentPlaceholder />
           )}

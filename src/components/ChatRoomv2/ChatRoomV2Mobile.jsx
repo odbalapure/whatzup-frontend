@@ -26,14 +26,19 @@ const ChatRoomV2Mobile = ({ socket }) => {
 
   const sendMsg = async () => {
     if (!msg) return;
+
+    const date = new Date();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
     const msgData = {
       author: user.name,
       email: user.email,
       message: msg,
       time:
-        new Date(Date.now()).getHours() +
+        (hour > 9 ? hour : `0${hour}`) +
         ":" +
-        new Date(Date.now()).getMinutes(),
+        (minute > 9 ? minute : `0${minute}`),
       msgId: Date.now().toString(),
       eventId
     };
@@ -118,19 +123,17 @@ const ChatRoomV2Mobile = ({ socket }) => {
           </div>
           {/* Event messages */}
           <div style={{ display: !eventId ? "none" : "block" }} className="p-2">
-            {!isEmpty(msgList)
-              ? msgList?.map((msg) => (
+            {!isEmpty(msgList) ? (
+              <div className="d-flex flex-column">
+                {msgList?.map((msg) => (
                   <div
                     style={{
-                      maxWidth: "15rem",
-                      borderRadius: "2rem",
-                      marginLeft: msg.email === user.email && "35%"
+                      maxWidth: "15rem"
                     }}
                     className={[
-                      "card-body w-20 mb-3 p-3",
                       msg.email === user.email
-                        ? "alert alert-success"
-                        : "alert alert-primary"
+                        ? "alert alert-success align-self-end"
+                        : "alert alert-primary align-self-start"
                     ]
                       .filter(Boolean)
                       .join(" ")}
@@ -144,8 +147,11 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     </div>
                     <div>{msg.message}</div>
                   </div>
-                ))
-              : renderPlaceholderOrLoader()}
+                ))}
+              </div>
+            ) : (
+              renderPlaceholderOrLoader()
+            )}
           </div>
         </div>
         {eventId ? (

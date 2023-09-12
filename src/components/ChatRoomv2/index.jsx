@@ -26,14 +26,19 @@ const ChatRoomV2 = ({ socket }) => {
 
   const sendMsg = async () => {
     if (!msg) return;
+
+    const date = new Date();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
     const msgData = {
       author: user.name,
       email: user.email,
       message: msg,
       time:
-        new Date(Date.now()).getHours() +
+        (hour > 9 ? hour : `0${hour}`) +
         ":" +
-        new Date(Date.now()).getMinutes(),
+        (minute > 9 ? minute : `0${minute}`),
       msgId: Date.now().toString(),
       eventId
     };
@@ -133,34 +138,37 @@ const ChatRoomV2 = ({ socket }) => {
             className="card-body"
             id="messages-show-full"
           >
-            {!isEmpty(msgList)
-              ? msgList?.map((msg) => (
+            {!isEmpty(msgList) ? (
+              <div className="d-flex flex-column">
+                {msgList?.map((msg) => (
                   <div
                     style={{
-                      maxWidth: "25rem",
-                      borderRadius: "2rem",
-                      marginLeft: msg.email === user.email && "50%"
+                      maxWidth: "20rem",
+                      display: "inline-block",
                     }}
                     className={[
-                      "card-body w-20 mb-3 p-3",
                       msg.email === user.email
-                        ? "alert alert-success"
-                        : "alert alert-primary"
+                        ? "alert alert-success align-self-end"
+                        : "alert alert-primary align-self-start"
                     ]
                       .filter(Boolean)
                       .join(" ")}
                     key={msg.msgId}
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
                     title="Your messages will appear green"
                   >
-                    <div>
-                      {msg.author} ({msg.time})
+                    <div className="d-flex justify-content-between">
+                      <div>
+                        {msg.email === user.email ? "You" : msg.author}{" "}
+                      </div>
+                      <div>{msg.time}</div>
                     </div>
                     <div className="lead">{msg.message}</div>
                   </div>
-                ))
-              : renderPlaceholderOrLoader()}
+                ))}
+              </div>
+            ) : (
+              renderPlaceholderOrLoader()
+            )}
           </div>
         )}
         {eventId && (

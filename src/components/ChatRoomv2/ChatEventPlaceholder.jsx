@@ -17,7 +17,7 @@ const ChatEventPlaceholder = () => {
             />
           </div>
           &nbsp;&nbsp;
-          <div className="bg-secondary placeholder col-9"></div>
+          <div className="bg-secondary placeholder col-7"></div>
         </div>
       ))}
     </>

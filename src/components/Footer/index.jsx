@@ -1,5 +1,3 @@
-import { isMobile } from "../../utils/common";
-
 function Footer() {
   const footerStyle = {
     paddingTop: "2rem",
@@ -9,50 +7,48 @@ function Footer() {
     left: 0,
     bottom: 0,
     width: "100%",
-    marginTop: isMobile() ? '1rem' : '5rem',
+    marginTop: "1rem"
   };
 
   return (
-    <div>
-      <div style={footerStyle}>
-        <div
-          className="d-flex justify-content-center align-items-center flex-wrap"
-          style={{ padding: "1rem", textAlign: "center" }}
-        >
-          <div>
-            <ol style={{ listStyle: "none", padding: 0, cursor: "pointer" }}>
-              <li>
-                <span>
-                  <b>Phone</b>
-                </span>
-                : +91-1234567890
-              </li>
-              <li>
-                <span>
-                  <b>Instagram ID</b>
-                </span>
-                : whatzup
-              </li>
-              <li>
-                <span>
-                  <b>Email</b>
-                </span>
-                : whatzup@gmail.com
-              </li>
-            </ol>
-          </div>
+    <div style={footerStyle}>
+      <div
+        className="d-flex justify-content-center align-items-center flex-wrap"
+        style={{ padding: "1rem", textAlign: "center" }}
+      >
+        <div>
+          <ol style={{ listStyle: "none", padding: 0, cursor: "pointer" }}>
+            <li>
+              <span>
+                <b>Phone</b>
+              </span>
+              : +91-1234567890
+            </li>
+            <li>
+              <span>
+                <b>Instagram ID</b>
+              </span>
+              : whatzup
+            </li>
+            <li>
+              <span>
+                <b>Email</b>
+              </span>
+              : whatzup@gmail.com
+            </li>
+          </ol>
         </div>
-        <hr className="mx-5" />
-        <p
-          style={{
-            fontSize: "1.3rem",
-            textAlign: "center",
-            paddingBottom: "2rem"
-          }}
-        >
-          <b>Whatzup ©</b>
-        </p>
       </div>
+      <hr className="mx-5" />
+      <p
+        style={{
+          fontSize: "1.3rem",
+          textAlign: "center",
+          paddingBottom: "2rem"
+        }}
+      >
+        <b>Whatzup ©</b>
+      </p>
     </div>
   );
 }

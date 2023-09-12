@@ -34,8 +34,9 @@ function Navbar() {
             />
           )}
           <Link style={{ textDecoration: "none", fontWeight: "600" }} to="/">
+            {isMobile() && <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>}
             <span className="navbar-brand text-success fs-3">
-              Whatzup{" "}
+              Whatzup&nbsp;
               <i
                 style={{ color: "azure" }}
                 className="bi bi-calendar2-day-fill"

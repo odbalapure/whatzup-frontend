@@ -9,24 +9,24 @@ import Announcement from "./pages/Announcement";
 import ResetPassword from "./components/ResetPassword";
 import ForgotPassword from "./components/ForgotPassword";
 import Navbar from "./components/Navbar";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
 function App() {
-  const [orientation, setOrientation] = useState(window.orientation);
+  // const [orientation, setOrientation] = useState(window.orientation);
 
-  useEffect(() => {
-    const handleOrientationChange = () => {
-      setOrientation(window.orientation);
-    };
+  // useEffect(() => {
+  //   const handleOrientationChange = () => {
+  //     setOrientation(window.orientation);
+  //   };
 
-    window.addEventListener("resize", () => {
-      handleOrientationChange();
-      window.location.reload();
-    });
-    return () => {
-      window.removeEventListener("resize", handleOrientationChange);
-    };
-  }, [orientation]);
+  //   window.addEventListener("resize", () => {
+  //     handleOrientationChange();
+  //     window.location.reload();
+  //   });
+  //   return () => {
+  //     window.removeEventListener("resize", handleOrientationChange);
+  //   };
+  // }, [orientation]);
 
   return (
     <div style={{ marginTop: "5rem" }}>

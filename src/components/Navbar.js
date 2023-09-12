@@ -20,7 +20,7 @@ function Navbar() {
   };
 
   useEffect(() => {
-    const navLinks = document.querySelectorAll(".nav-link");
+    const navLinks = document.querySelectorAll(".nav-item");
     if (!navLinks) return;
     navLinks.forEach(function (link) {
       link.addEventListener("click", function () {
@@ -86,8 +86,8 @@ function Navbar() {
                   Signup
                 </Link>
               </li>
-              {isAdmin && isLoggedIn ? (
-                <li className="nav-item">
+              <li className="nav-item">
+                {isAdmin && isLoggedIn && (
                   <Link
                     className="nav-link fs-5"
                     aria-current="page"
@@ -95,21 +95,21 @@ function Navbar() {
                   >
                     Event
                   </Link>
-                </li>
-              ) : null}
-              {isAdmin && isLoggedIn ? (
-                <li className="nav-item">
+                )}
+              </li>
+              <li className="nav-item">
+                {isAdmin && isLoggedIn && (
                   <Link
                     className="nav-link fs-5"
                     aria-current="page"
                     to="/announcement"
                   >
-                    Announcement
+                    Announcements
                   </Link>
-                </li>
-              ) : null}
-              {isLoggedIn ? (
-                <li className="nav-item">
+                )}
+              </li>
+              <li className="nav-item">
+                {isLoggedIn && (
                   <Link
                     className="nav-link fs-5"
                     aria-current="page"
@@ -117,8 +117,8 @@ function Navbar() {
                   >
                     Chat
                   </Link>
-                </li>
-              ) : null}
+                )}
+              </li>
             </ul>
             {isLoggedIn || userName ? (
               <div

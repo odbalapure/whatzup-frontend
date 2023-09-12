@@ -149,7 +149,7 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     title="Your messages will appear green"
                   >
                     <div className="fw-bold">
-                      {msg.author}
+                      {msg.email === user.email ? "You" : msg.author}{" "}
                     </div>
                     <div>{msg.message}</div>
                     <div className="text-end">{msg.time}</div>

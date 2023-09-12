@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useGlobalContext } from "../context";
 import { isMobile } from "../utils/common";
+import { useEffect } from "react";
 
 function Navbar() {
   /* Navigate programatically */
@@ -17,6 +18,21 @@ function Navbar() {
     navigateToHome();
     window.location.reload(false);
   };
+
+  useEffect(() => {
+    const navLinks = document.querySelectorAll(".nav-link");
+    if (!navLinks) return;
+    navLinks.forEach(function (link) {
+      link.addEventListener("click", function () {
+        const navbarToggler = document.querySelector(".navbar-toggler");
+        if (navbarToggler.classList.contains("collapsed")) {
+        }
+        const navbarContent = document.querySelector(".navbar-collapse");
+        navbarContent.classList.remove("show");
+        navbarToggler.classList.add("collapsed");
+      });
+    });
+  }, []);
 
   return (
     <>
@@ -55,7 +71,7 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0" onClick={(e) => {}}>
               <li className="nav-item">
                 <Link className="nav-link fs-5" aria-current="page" to="/login">
                   Login

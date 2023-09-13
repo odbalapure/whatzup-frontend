@@ -19,6 +19,7 @@ const ChatRoomV2 = ({ socket }) => {
       showMessageRef.current.scrollTop = showMessageRef.current.scrollHeight;
     }
   };
+  
   useEffect(() => {
     scrollToBottom();
   }, [msgList, eventId]);
@@ -162,7 +163,7 @@ const ChatRoomV2 = ({ socket }) => {
                         {msg.email === user.email ? "You" : msg.author}{" "}
                       </div>
                     </div>
-                    <div className="lead">{msg.message}</div>
+                    <div className="">{msg.message}</div>
                     <div className="text-end">{msg.time}</div>
                   </div>
                 ))}

@@ -111,7 +111,6 @@ const ChatRoomV2 = ({ socket }) => {
                 src={event?.image}
                 height="60px"
                 alt="event_image_desktop"
-                loading="lazy"
               />
               <div className="p-3">{event?.event}</div>
             </div>

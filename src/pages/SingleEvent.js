@@ -90,7 +90,6 @@ function SingleEvent() {
                 className="img-fluid w-100 h-100"
                 src={location.state.image}
                 alt={location.state.event}
-                loading="lazy"
               />
             ) : (
               <div

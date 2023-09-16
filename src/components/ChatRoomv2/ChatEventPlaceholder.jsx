@@ -14,7 +14,6 @@ const ChatEventPlaceholder = () => {
               height="60px"
               width="60px"
               alt="placeholder-for-event"
-              loading="lazy"
             />
           </div>
           &nbsp;&nbsp;

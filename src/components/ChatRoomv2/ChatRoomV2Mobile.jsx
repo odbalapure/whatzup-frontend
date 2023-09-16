@@ -127,7 +127,6 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     src={event?.image}
                     height="60px"
                     alt="event-thumbnail"
-                    loading="lazy"
                   />
                   <div className="p-3">{event?.event}</div>
                 </div>

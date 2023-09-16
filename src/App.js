@@ -12,11 +12,12 @@ const Announcement = lazy(() => import("./pages/Announcement"));
 const ResetPassword = lazy(() => import("./components/ResetPassword"));
 const ForgotPassword = lazy(() => import("./components/ForgotPassword"));
 const Navbar = lazy(() => import("./components/Navbar"));
+const PageNotFound = lazy(() => import("./components/common/PageNotFound"));
 
 function App() {
   return (
     <div style={{ marginTop: "5rem" }}>
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<Spinner top="20rem" />}>
         <BrowserRouter>
           <Navbar />
           <Routes>
@@ -32,20 +33,7 @@ function App() {
               path="/reset-password/:email"
               element={<ResetPassword />}
             ></Route>
-            <Route
-              path="*"
-              element={
-                <div className="container">
-                  <div
-                    className="d-flex justify-content-center align-items-center alert alert-danger"
-                    role="alert"
-                  >
-                    This page does not exist{" "}
-                    <span style={{ fontSize: "2rem" }}>😕</span>
-                  </div>
-                </div>
-              }
-            />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>
       </Suspense>

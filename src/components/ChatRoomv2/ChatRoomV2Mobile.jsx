@@ -144,7 +144,7 @@ const ChatRoomV2Mobile = ({ socket }) => {
                 {msgList?.map((msg) => (
                   <div
                     style={{
-                      maxWidth: "15rem",
+                      maxWidth: "17rem",
                       display: "inline-block"
                     }}
                     className={[

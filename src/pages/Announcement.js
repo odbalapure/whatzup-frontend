@@ -362,7 +362,7 @@ function Announcement() {
             </tbody>
           </table>
         ) : (
-          <Spinner top="40rem" />
+          <Spinner message="Loading announcements please wait..." top="40rem" />
         )}
         {isError && <CustomToast />}
       </div>

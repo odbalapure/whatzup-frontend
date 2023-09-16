@@ -4,6 +4,7 @@ import { Api } from "../../utils/Api";
 import ChatEventPlaceholderMobile from "./ChatEventPlaceholderMobile";
 import isEmpty, { convertTo12HourFormat } from "../../utils/common";
 import ChatEmptyMessages from "./ChatEmptyMessages";
+import Spinner from "../common/Spinner";
 
 const ChatRoomV2Mobile = ({ socket }) => {
   const { data: eventsList } = useAsync("events", "GET", null, false);
@@ -62,10 +63,10 @@ const ChatRoomV2Mobile = ({ socket }) => {
           className="d-flex justify-content-center"
           style={{ marginTop: "50%" }}
         >
-          <div
-            className="spinner-border text-secondary"
-            role="status"
-            style={{ height: "4rem", width: "4rem" }}
+          <Spinner
+            top="13rem"
+            message="Loading messages please wait..."
+            tip="If its taking too long, please refresh the page!"
           />
         </div>
       );
@@ -118,7 +119,8 @@ const ChatRoomV2Mobile = ({ socket }) => {
                   }}
                   style={{
                     borderBottom: "1px solid lightgray",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    pointerEvents: event?._id === eventId && "none"
                   }}
                 >
                   <img

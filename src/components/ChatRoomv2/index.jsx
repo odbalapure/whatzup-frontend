@@ -4,6 +4,7 @@ import useAsync from "../../hooks/useAsync";
 import { Api } from "../../utils/Api";
 import ChatEmptyMessages from "./ChatEmptyMessages";
 import isEmpty, { convertTo12HourFormat } from "../../utils/common";
+import Spinner from "../common/Spinner";
 
 const ChatRoomV2 = ({ socket }) => {
   const { data: eventsList } = useAsync("events", "GET", null, false);
@@ -62,10 +63,10 @@ const ChatRoomV2 = ({ socket }) => {
           className="d-flex justify-content-center"
           style={{ marginTop: "25%" }}
         >
-          <div
-            className="spinner-border text-secondary"
-            role="status"
-            style={{ height: "4rem", width: "4rem" }}
+          <Spinner
+            message="Loading messages please wait..."
+            tip="If its taking too long, please refresh the page!"
+            top="15rem"
           />
         </div>
       );
@@ -102,8 +103,10 @@ const ChatRoomV2 = ({ socket }) => {
               }}
               style={{
                 borderBottom: "1px solid lightgray",
-                cursor: "pointer"
+                cursor: "pointer",
+                pointerEvents: event?._id === eventId && "none"
               }}
+              disabled
             >
               <img
                 width="20%"

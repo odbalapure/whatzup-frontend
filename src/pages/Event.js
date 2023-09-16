@@ -389,7 +389,9 @@ function Event() {
         ) : null}
       </div>
       {warning && <CustomToast />}
-      {isLoading && <Spinner top="40rem" />}
+      {isLoading && (
+        <Spinner message="Loading events please wait..." top="40rem" />
+      )}
     </div>
   );
 }

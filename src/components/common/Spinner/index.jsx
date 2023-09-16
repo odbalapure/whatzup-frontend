@@ -18,6 +18,7 @@ const Spinner = (props) => (
       <span className="visually-hidden">Loading...</span>
     </div>
     <div>{props.message || ""}</div>
+    <div>{props.tip || ""}</div>
   </div>
 );
 

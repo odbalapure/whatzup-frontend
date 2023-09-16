@@ -79,7 +79,16 @@ const ChatRoomV2Mobile = ({ socket }) => {
         <div style={{ display: !eventId ? "none" : "block" }}>
           <div className="card-header d-flex align-items-center">
             <div onClick={() => setEventId(null)}>
-              <i class="bi bi-arrow-left-circle-fill fs-4" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="currentColor"
+                class="bi bi-arrow-left-circle-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+              </svg>
             </div>
             &nbsp;&nbsp;
             <div className="lead fw-bold">
@@ -118,6 +127,7 @@ const ChatRoomV2Mobile = ({ socket }) => {
                     src={event?.image}
                     height="60px"
                     alt="event-thumbnail"
+                    loading="lazy"
                   />
                   <div className="p-3">{event?.event}</div>
                 </div>
@@ -183,21 +193,32 @@ const ChatRoomV2Mobile = ({ socket }) => {
               &nbsp;
               <button
                 type="submit"
-                className="btn btn-success bi bi-send-fill"
+                className="btn btn-success"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 title="Send Message"
                 onClick={sendMsg}
                 style={{ borderRadius: "50%" }}
-              ></button>
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-send-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+                </svg>
+              </button>
             </form>
           </div>
         ) : (
-          <div className="text-center text-muted p-3">
-            <i style={{ fontSize: "2rem" }} className="bi bi-calendar-day" />
-            <div>Please select an event to start chatting</div>
-            <div>Whatzup ©, 2023</div>
-          </div>
+          <ChatEmptyMessages
+            height="30"
+            width="30"
+            message="Please select an event to start chatting"
+          />
         )}
       </div>
     </div>

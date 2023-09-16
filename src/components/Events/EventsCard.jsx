@@ -21,6 +21,7 @@ const EventsCard = (props) => {
               src={event.image}
               className="card-img-top h-100"
               alt={event.event}
+              loading="lazy"
             />
           ) : (
             <div

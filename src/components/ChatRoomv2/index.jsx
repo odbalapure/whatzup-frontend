@@ -19,7 +19,7 @@ const ChatRoomV2 = ({ socket }) => {
       showMessageRef.current.scrollTop = showMessageRef.current.scrollHeight;
     }
   };
-  
+
   useEffect(() => {
     scrollToBottom();
   }, [msgList, eventId]);
@@ -70,7 +70,13 @@ const ChatRoomV2 = ({ socket }) => {
         </div>
       );
     }
-    return <ChatEmptyMessages message="No messages to display!" />;
+    return (
+      <ChatEmptyMessages
+        height="30"
+        width="30"
+        message="No messages to display!"
+      />
+    );
   };
 
   return (
@@ -105,6 +111,7 @@ const ChatRoomV2 = ({ socket }) => {
                 src={event?.image}
                 height="60px"
                 alt="event_image_desktop"
+                loading="lazy"
               />
               <div className="p-3">{event?.event}</div>
             </div>
@@ -131,6 +138,8 @@ const ChatRoomV2 = ({ socket }) => {
         )}
         {!eventId ? (
           <ChatEmptyMessages
+            height="50"
+            width="50"
             message={"Please select an event to start chatting"}
           />
         ) : (
@@ -194,13 +203,24 @@ const ChatRoomV2 = ({ socket }) => {
               </div>
               <button
                 type="submit"
-                className="btn btn-success bi bi-send-fill"
+                className="btn btn-success"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 title="Send Message"
                 onClick={sendMsg}
                 style={{ borderRadius: "50%" }}
-              ></button>
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-send-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+                </svg>
+              </button>
             </form>
           </div>
         )}

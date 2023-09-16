@@ -4,11 +4,11 @@ const Spinner = (props) => (
       position: "absolute",
       left: 0,
       right: 0,
-      top: props.top || '10rem',
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      top: props.top || "10rem",
+      marginLeft: "auto",
+      marginRight: "auto"
     }}
-    className="d-flex justify-content-center align-items-center text-secondary"
+    className="d-flex flex-column justify-content-center align-items-center text-secondary"
   >
     <div
       style={{ height: "3rem", width: "3rem" }}
@@ -17,6 +17,7 @@ const Spinner = (props) => (
     >
       <span className="visually-hidden">Loading...</span>
     </div>
+    <div>{props.message || ""}</div>
   </div>
 );
 

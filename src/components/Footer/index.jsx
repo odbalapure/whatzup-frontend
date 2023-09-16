@@ -40,7 +40,7 @@ function Footer() {
         </div>
       </div>
       <hr className="mx-5" />
-      <p
+      <div
         style={{
           fontSize: "1.3rem",
           textAlign: "center",
@@ -48,7 +48,7 @@ function Footer() {
         }}
       >
         <b>Whatzup ©</b>
-      </p>
+      </div>
     </div>
   );
 }
